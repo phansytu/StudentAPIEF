@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace StudentAPIw5.model.request
+namespace StudentAPIw6.Model.request
 {
     public class SinhVienQueryRequest : PaginationRequest
     {

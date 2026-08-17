@@ -1,4 +1,4 @@
-namespace StudentAPIw5.model.request
+namespace StudentAPIw6.Model.request
 {
     public class PaginationRequest
     {

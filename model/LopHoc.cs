@@ -1,17 +1,25 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace StudentAPIw5.model
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace StudentAPIw6.Model
 {
+    [Table("LopHoc")]
     public class LopHoc
     {
+        [Key]
+        [Column("id")]
         public string Id { get; set; } = string.Empty;
+        [Column("maLop")]
         public string MaLop { get; set; } = string.Empty;
+        [Column("tenLop")]
         public required string TenLop { get; set; }
+        [Column("chuyenNganh")]
         public required string ChuyenNganh { get; set; }
 
+        public string maBM { get; set; }
+        [ForeignKey("maBM")]
+        public BoMon? BoMon { get; set; }
         public ICollection<SinhVien>? SinhViens { get; set; }
     }
 }

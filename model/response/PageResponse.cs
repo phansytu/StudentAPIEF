@@ -1,4 +1,4 @@
-namespace StudentAPIw5.model.response
+namespace StudentAPIw6.Model.response
 {
     public class PageResponse<T>
     {
