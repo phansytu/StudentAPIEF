@@ -18,7 +18,7 @@ namespace StudentAPIw6.AutoMapper
                 GioiTinh = createStudentDTO.GioiTinh,
                 Email = createStudentDTO.Email,
                 DiemTB = createStudentDTO.DiemTB,
-                MaLop = createStudentDTO.MaLop
+                LopHocId = createStudentDTO.lopHocId
             };
         }
         // entity -> response
@@ -32,7 +32,7 @@ namespace StudentAPIw6.AutoMapper
                 GioiTinh = student.GioiTinh,
                 Email = student.Email,
                 DiemTB = student.DiemTB,
-                MaLop = student.MaLop
+                LopHocId = student.LopHocId
             };
         }
         // update -> entity
@@ -44,7 +44,7 @@ namespace StudentAPIw6.AutoMapper
             student.GioiTinh = updateStudentDTO.GioiTinh;
             student.Email = updateStudentDTO.Email;
             student.DiemTB = updateStudentDTO.DiemTB;
-            student.MaLop = updateStudentDTO.MaLop;
+            student.LopHocId = updateStudentDTO.lopHocId;
         }
         // entity -> response
         public static List<SinhVienDTO.Response> ToResponseList(this IEnumerable<SinhVien> students)

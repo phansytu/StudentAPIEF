@@ -16,19 +16,31 @@ namespace StudentAPIw6.validator
             _appDbContext = appDbContext;
         }
 
-        public LopHoc CheckMaLop(string maLop)
+        public LopHoc CheckIdMaLop(string key)
         {
-
-            var exists = _appDbContext.LopHocs
-                .FirstOrDefault(x => x.MaLop == maLop);
-
-            if (exists == null)
+            if (string.IsNullOrEmpty(key))
+            {
+                throw new ArgumentException("Mã hoặc Id lớp học không được để trống.");
+            }
+            if (int.TryParse(key, out int id))
+            {
+                var byId = _appDbContext.LopHocs
+                .Find(id);
+                if (byId == null)
+                {
+                    throw new LopHocNotFoundException($"Lớp học có Id {id} không tồn tại.");
+                }
+                return byId;
+            }
+            var ByMa = _appDbContext.LopHocs
+                .FirstOrDefault(x => x.MaLop == key);
+            if (ByMa == null)
             {
                 throw new LopHocNotFoundException(
-                    $"Lớp {maLop} không tồn tại"
+                    $"Lớp {key} không tồn tại"
                 );
             }
-            return exists;
+            return ByMa;
         }
 
 
@@ -46,34 +58,5 @@ namespace StudentAPIw6.validator
         }
 
 
-        public void CheckTenLop(
-            string tenLop,
-            string maLop)
-        {
-            var exists = _appDbContext.LopHocs
-                .Any(x =>
-                    x.TenLop == tenLop &&
-                    x.MaLop != maLop);
-
-            if (exists)
-            {
-                throw new LopHocBadRequestException(
-                    $"Tên lớp {tenLop} đã tồn tại"
-                );
-            }
-        }
-
-        public void CheckCanDelete(string maLop)
-        {
-            var hasStudent = _appDbContext.SinhViens
-                .Any(x => x.MaLop == maLop);
-
-            if (hasStudent)
-            {
-                throw new LopHocBadRequestException(
-                    $"Không thể xóa lớp {maLop} vì lớp đang có sinh viên"
-                );
-            }
-        }
     }
 }

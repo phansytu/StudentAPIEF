@@ -14,8 +14,8 @@ namespace StudentAPIw6.DTOs
             public bool GioiTinh { get; set; }
             public DateTime NgaySinh { get; set; }
             public string? Email { get; set; }
-            public double DiemTB { get; set; }
-            public string? MaLop { get; set; }
+            public decimal DiemTB { get; set; }
+            public int LopHocId { get; set; }
         }
 
 
@@ -26,8 +26,8 @@ namespace StudentAPIw6.DTOs
             public bool GioiTinh { get; set; }
             public DateTime NgaySinh { get; set; }
             public required string Email { get; set; }
-            public double DiemTB { get; set; }
-            public required string MaLop { get; set; }
+            public decimal DiemTB { get; set; }
+            public required int lopHocId { get; set; }
 
         }
         public class SinhVienUpdateDTO
@@ -36,8 +36,8 @@ namespace StudentAPIw6.DTOs
             public bool GioiTinh { get; set; }
             public DateTime NgaySinh { get; set; }
             public required string Email { get; set; }
-            public double DiemTB { get; set; }
-            public required string MaLop { get; set; }
+            public decimal DiemTB { get; set; }
+            public required int lopHocId { get; set; }
 
         }
     }

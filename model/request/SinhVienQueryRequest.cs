@@ -11,9 +11,9 @@ namespace StudentAPIw6.Model.request
 
         public bool? GioiTinh { get; set; }
 
-        public double? DiemTu { get; set; }
+        public decimal? DiemTu { get; set; }
 
-        public double? DiemDen { get; set; }
+        public decimal? DiemDen { get; set; }
 
         public string? SortBy { get; set; }
 

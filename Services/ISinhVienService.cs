@@ -13,14 +13,13 @@ namespace StudentAPIw6.Services
         Task<PageResponse<SinhVienDTO.Response>> GetAll(SinhVienQueryRequest request);
 
         //getbyid
-        Task<SinhVienDTO.Response> GetSinhVienById(string id);
+        Task<SinhVienDTO.Response> GetSinhVienById(string key);
         //create
         Task<SinhVienDTO.Response> CreateSinhVien(SinhVienDTO.SinhVienCreateDTO createStudentDTO);
         //update
         Task<SinhVienDTO.Response> UpdateSinhVien(string maSV, SinhVienDTO.SinhVienUpdateDTO updateStudentDTO);
         //delete
         Task<bool> DeleteSinhVien(string maSV);
-        public void TaoMaIdSinhVienTuDong(SinhVien sinhVien);
 
     }
 }

@@ -7,7 +7,7 @@ namespace StudentAPIw6.Model.response
 {
     public class ThongKeLopHoc
     {
-        public string MaLop { get; set; } = string.Empty;
+        public int lopHocId { get; set; }
 
         public string TenLop { get; set; } = string.Empty;
 
@@ -15,10 +15,10 @@ namespace StudentAPIw6.Model.response
 
         public int SoLuongSinhVien { get; set; }
 
-        public double DiemTrungBinh { get; set; }
+        public decimal DiemTrungBinh { get; set; }
 
-        public double DiemCaoNhat { get; set; }
+        public decimal DiemCaoNhat { get; set; }
 
-        public double DiemThapNhat { get; set; }
+        public decimal DiemThapNhat { get; set; }
     }
 }

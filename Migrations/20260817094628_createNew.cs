@@ -56,7 +56,7 @@ namespace StudentAPIw6.Migrations
                     GioiTinh = table.Column<bool>(type: "bit", nullable: false),
                     NgaySinh = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DiemTB = table.Column<double>(type: "float", nullable: false),
+                    DiemTB = table.Column<decimal>(type: "float", nullable: false),
                     MaLop = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     lopHocId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },

@@ -8,17 +8,17 @@ namespace StudentAPIw6.validator
 {
     public class SinhVienBusinessValidator
     {
-        private readonly AppDbContext _dataSinhVien;
+        private readonly AppDbContext _appDbContext;
 
         public SinhVienBusinessValidator(
-            AppDbContext dataSinhVien)
+            AppDbContext appDbContext)
         {
-            _dataSinhVien = dataSinhVien;
+            _appDbContext = appDbContext;
         }
 
         public void CheckEmail(string email)
         {
-            var exists = _dataSinhVien.SinhViens
+            var exists = _appDbContext.SinhViens
                 .Any(s => s.Email == email);
 
             if (exists)
@@ -28,53 +28,31 @@ namespace StudentAPIw6.validator
                 );
             }
         }
-
-        public void CheckEmail(
-            string email,
-            string id)
+        public SinhVien CheckIdMsv(string key)
         {
-            var exists = _dataSinhVien.SinhViens
-                .Any(s =>
-                    s.Email == email &&
-                    s.Id != id);
-
-            if (exists)
+            if (string.IsNullOrEmpty(key))
             {
-                throw new SinhVienBadRequestException(
-                    $"Email {email} đã tồn tại"
-                );
+                throw new ArgumentException("Mã hoặc Id sinh học không được để trống.");
             }
-        }
-        public SinhVien CheckMaSv(string masv)
-        {
-            var student = _dataSinhVien.SinhViens
-                .FirstOrDefault(s => s.MaSV == masv);
-
-            if (student == null)
+            if (int.TryParse(key, out int id))
+            {
+                var byId = _appDbContext.SinhViens
+                .Find(id);
+                if (byId == null)
+                {
+                    throw new SinhVienNotFoundException($"Lớp học có Id {id} không tồn tại.");
+                }
+                return byId;
+            }
+            var ByMa = _appDbContext.SinhViens
+                .FirstOrDefault(x => x.MaSV == key);
+            if (ByMa == null)
             {
                 throw new SinhVienNotFoundException(
-                    $"Không tìm thấy sinh viên {masv}"
+                    $"Lớp {key} không tồn tại"
                 );
             }
-
-
-            return student;
+            return ByMa;
         }
-
-        public SinhVien CheckStudent(string id)
-        {
-            var student = _dataSinhVien.SinhViens
-                .FirstOrDefault(s => s.Id == id);
-
-            if (student == null)
-            {
-                throw new SinhVienNotFoundException(
-                    $"Không tìm thấy sinh viên {id}"
-                );
-            }
-
-            return student;
-        }
-
     }
 }

@@ -9,8 +9,7 @@ namespace StudentAPIw6.Model
     {
         [Key]
         [Column("id")]
-
-        public string Id { get; set; } = string.Empty;
+        public int Id { get; set; }
         [Column("msv")]
         public string MaSV { get; set; } = string.Empty;
         [Column("hoTen")]
@@ -22,10 +21,10 @@ namespace StudentAPIw6.Model
         [Column("email")]
         public required string Email { get; set; }
         [Column("diemTb")]
-        public double DiemTB { get; set; }
-        [Column("maLop")]
-        public required string MaLop { get; set; }
-        [ForeignKey("MaLop")]
+        public decimal DiemTB { get; set; }
+        [Column("lopHocId")]
+        public required int LopHocId { get; set; }
+        [ForeignKey("lopHocId")]
         public LopHoc? lopHoc { get; set; }
 
     }

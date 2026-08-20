@@ -11,11 +11,10 @@ namespace StudentAPIw6.Services
     public interface ILopHocService
     {
         Task<PageResponse<LopHocDTO.Response>> GetAllLopHoc(PaginationRequest request);
-        Task<LopHocDTO.Response> GetLopHocById(string maLop);
+        Task<LopHocDTO.Response> GetLopHocById(string lopHocId);
         Task<LopHocDTO.Response> CreateLopHoc(LopHocDTO.LopHocCreateDTO createLopHocDTO);
-        Task<LopHocDTO.Response> UpdateLopHoc(string maLop, LopHocDTO.LopHocUpdateDTO updateLopHocDTO);
+        Task<LopHocDTO.Response> UpdateLopHoc(string key, LopHocDTO.LopHocUpdateDTO updateLopHocDTO);
         Task<bool> DeleteLopHoc(string maLop);
-        void TaoMaLop(LopHoc lopHoc);
         Task<List<ThongKeLopHoc>> ThongKeLopHoc();
     }
 }

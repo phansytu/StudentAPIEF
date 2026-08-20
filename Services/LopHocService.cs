@@ -22,42 +22,20 @@ namespace StudentAPIw6.Services
             _appDbContext = appDbContext;
             _business = business;
         }
-        public void TaoMaLop(LopHoc lophoc)
-        {
-            int maxSo = 0;
 
-            foreach (var lp in _appDbContext.LopHocs)
-            {
-
-                if (!string.IsNullOrEmpty(lp.MaLop) &&
-                    lp.MaLop.Length > 1 &&
-                    int.TryParse(lp.MaLop.Substring(1), out int so))
-                {
-                    if (so > maxSo)
-                    {
-                        maxSo = so;
-                    }
-                }
-            }
-
-            int newSo = maxSo + 1;
-            lophoc.MaLop = $"L{newSo:D3}";
-        }
 
         public async Task<LopHocDTO.Response> CreateLopHoc(LopHocDTO.LopHocCreateDTO createLopHocDTO)
         {
             _business.CheckTenLop(createLopHocDTO.TenLop);
             //chuyen sang entty
             var lophoc = createLopHocDTO.ToEntity();
-            TaoMaLop(lophoc);
             _appDbContext.LopHocs.Add(lophoc);
             return lophoc.ToResponse();
         }
 
-        public async Task<bool> DeleteLopHoc(string maLop)
+        public async Task<bool> DeleteLopHoc(string key)
         {
-            var lp = _business.CheckMaLop(maLop);
-            _business.CheckCanDelete(maLop);
+            var lp = _business.CheckIdMaLop(key);
             _appDbContext.LopHocs.Remove(lp);
             return true;
         }
@@ -81,17 +59,17 @@ namespace StudentAPIw6.Services
 
         public async Task<LopHocDTO.Response> GetLopHocById(string maLop)
         {
-            var lp = _business.CheckMaLop(maLop);
+            var lp = _business.CheckIdMaLop(maLop);
             return lp.ToResponse();
         }
 
         public async Task<List<ThongKeLopHoc>> ThongKeLopHoc()
         {
             var result = _appDbContext.SinhViens
-        .GroupBy(sv => sv.MaLop)
+        .GroupBy(sv => sv.LopHocId)
         .Select(group => new ThongKeLopHoc
         {
-            MaLop = group.Key,
+            lopHocId = group.Key,
 
             SoLuongSinhVien = group.Count(),
 
@@ -106,9 +84,9 @@ namespace StudentAPIw6.Services
             return result;
         }
 
-        public async Task<LopHocDTO.Response> UpdateLopHoc(string maLop, LopHocDTO.LopHocUpdateDTO updateLopHocDTO)
+        public async Task<LopHocDTO.Response> UpdateLopHoc(string key, LopHocDTO.LopHocUpdateDTO updateLopHocDTO)
         {
-            var lp = _business.CheckMaLop(maLop);
+            var lp = _business.CheckIdMaLop(key);
             lp.updateEntity(updateLopHocDTO);
             return lp.ToResponse();
         }

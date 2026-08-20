@@ -32,11 +32,9 @@ namespace StudentAPIw6.validator
                     .InclusiveBetween(0, 10)
                     .WithMessage("Điểm trung bình phải từ 0 đến 10");
 
-                RuleFor(x => x.MaLop)
-                    .NotEmpty()
-                    .WithMessage("Mã lớp không được để trống")
-                    .MaximumLength(20)
-                    .WithMessage("Mã lớp không được vượt quá 20 ký tự");
+                RuleFor(x => x.lopHocId)
+                    .NotNull()
+                    .WithMessage("Id lớp không được để trống");
             }
         }
 
@@ -67,11 +65,9 @@ namespace StudentAPIw6.validator
                     .InclusiveBetween(0, 10)
                     .WithMessage("Điểm trung bình phải từ 0 đến 10");
 
-                RuleFor(x => x.MaLop)
-                    .NotEmpty()
-                    .WithMessage("Mã lớp không được để trống")
-                    .MaximumLength(20)
-                    .WithMessage("Mã lớp không được vượt quá 20 ký tự");
+                RuleFor(x => x.lopHocId)
+                    .NotNull()
+                    .WithMessage("Id lớp phải tồn tại trong lớp học");
             }
         }
     }

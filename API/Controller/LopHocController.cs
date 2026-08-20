@@ -25,9 +25,9 @@ namespace StudentAPIw6.controller
             return Ok(all);
         }
         [HttpGet("{maLop}")]
-        public async Task<IActionResult> GetLopHocById([FromRoute] string maLop)
+        public async Task<IActionResult> GetLopHocById([FromRoute] string key)
         {
-            var rs = await _service.GetLopHocById(maLop);
+            var rs = await _service.GetLopHocById(key);
             return Ok(rs);
         }
         [HttpPost]
@@ -41,9 +41,9 @@ namespace StudentAPIw6.controller
             );
         }
         [HttpDelete("{maLop}")]
-        public async Task<IActionResult> DeleteLopHoc([FromRoute] string maLop)
+        public async Task<IActionResult> DeleteLopHoc([FromRoute] string key)
         {
-            await _service.DeleteLopHoc(maLop);
+            await _service.DeleteLopHoc(key);
 
             return NoContent();
         }

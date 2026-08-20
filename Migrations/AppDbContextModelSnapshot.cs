@@ -79,7 +79,7 @@ namespace StudentAPIw6.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<double>("DiemTB")
+                    b.Property<decimal>("DiemTB")
                         .HasColumnType("float");
 
                     b.Property<string>("Email")

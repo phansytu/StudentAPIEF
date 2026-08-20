@@ -7,18 +7,21 @@ namespace StudentAPIw6.Model
     [Table("LopHoc")]
     public class LopHoc
     {
+
         [Key]
         [Column("id")]
-        public string Id { get; set; } = string.Empty;
+        public int Id { get; set; }
+
         [Column("maLop")]
+
         public string MaLop { get; set; } = string.Empty;
         [Column("tenLop")]
         public required string TenLop { get; set; }
         [Column("chuyenNganh")]
         public required string ChuyenNganh { get; set; }
 
-        public string maBM { get; set; }
-        [ForeignKey("maBM")]
+        public int BoMonId { get; set; }
+        [ForeignKey("boMonId")]
         public BoMon? BoMon { get; set; }
         public ICollection<SinhVien>? SinhViens { get; set; }
     }

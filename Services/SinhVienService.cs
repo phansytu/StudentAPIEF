@@ -23,29 +23,6 @@ namespace StudentAPIw6.Services
             _businessValidator = businessValidator;
         }
 
-        public void TaoMaIdSinhVienTuDong(SinhVien sinhVien)
-        {
-            int maxSo = 0;
-
-            foreach (var sv in _appDbContext.SinhViens)
-            {
-
-                if (!string.IsNullOrEmpty(sv.MaSV) &&
-                    sv.MaSV.Length > 3 &&
-                    int.TryParse(sv.MaSV.Substring(3), out int so))
-                {
-                    if (so > maxSo)
-                    {
-                        maxSo = so;
-                    }
-                }
-            }
-
-            int newSo = maxSo + 1;
-            sinhVien.Id = $"SV{newSo:D4}";
-            sinhVien.MaSV = $"MSV{newSo:D4}";
-        }
-
         public async Task<PageResponse<SinhVienDTO.Response>> GetAll(SinhVienQueryRequest request)
         {
             var students = _appDbContext.SinhViens.AsQueryable();
@@ -91,30 +68,28 @@ namespace StudentAPIw6.Services
         }
 
 
-        public async Task<SinhVienDTO.Response> GetSinhVienById(string id)
+        public async Task<SinhVienDTO.Response> GetSinhVienById(string key)
         {
-            var sv = _businessValidator.CheckStudent(id);
+            var sv = _businessValidator.CheckIdMsv(key);
             return sv.ToResponse();
         }
         public async Task<SinhVienDTO.Response> CreateSinhVien(SinhVienDTO.SinhVienCreateDTO createStudentDTO)
         {
             _businessValidator.CheckEmail(createStudentDTO.Email);
             var student = createStudentDTO.ToEntity();
-            TaoMaIdSinhVienTuDong(student);
             _appDbContext.SinhViens.Add(student);
             return student.ToResponse();
         }
         public async Task<SinhVienDTO.Response> UpdateSinhVien(string maSV, SinhVienDTO.SinhVienUpdateDTO updateStudentDTO)
         {
-            var sv = _businessValidator.CheckMaSv(maSV);
-            _businessValidator.CheckEmail(updateStudentDTO.Email, sv.Id);
+            var sv = _businessValidator.CheckIdMsv(maSV);
             sv.updateEntity(updateStudentDTO);
             return sv.ToResponse();
         }
 
         public async Task<bool> DeleteSinhVien(string maSV)
         {
-            var sv = _businessValidator.CheckMaSv(maSV);
+            var sv = _businessValidator.CheckIdMsv(maSV);
             _appDbContext.SinhViens.Remove(sv);
             return true;
         }
