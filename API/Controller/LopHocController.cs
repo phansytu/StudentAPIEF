@@ -24,7 +24,7 @@ namespace StudentAPIw6.controller
             var all = await _service.GetAllLopHoc(request);
             return Ok(all);
         }
-        [HttpGet("{maLop}")]
+        [HttpGet("{key}")]
         public async Task<IActionResult> GetLopHocById([FromRoute] string key)
         {
             var rs = await _service.GetLopHocById(key);
@@ -40,7 +40,7 @@ namespace StudentAPIw6.controller
                 rs
             );
         }
-        [HttpDelete("{maLop}")]
+        [HttpDelete("{key}")]
         public async Task<IActionResult> DeleteLopHoc([FromRoute] string key)
         {
             await _service.DeleteLopHoc(key);

@@ -24,7 +24,7 @@ namespace StudentAPIw6.Model
         public decimal DiemTB { get; set; }
         [Column("lopHocId")]
         public required int LopHocId { get; set; }
-        [ForeignKey("lopHocId")]
+        [ForeignKey("LopHocId")]
         public LopHoc? lopHoc { get; set; }
 
     }

@@ -20,8 +20,9 @@ namespace StudentAPIw6.Model
         [Column("chuyenNganh")]
         public required string ChuyenNganh { get; set; }
 
+        [Column("boMonId")]
         public int BoMonId { get; set; }
-        [ForeignKey("boMonId")]
+        [ForeignKey("BoMonId")]
         public BoMon? BoMon { get; set; }
         public ICollection<SinhVien>? SinhViens { get; set; }
     }
