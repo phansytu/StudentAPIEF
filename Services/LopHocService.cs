@@ -10,6 +10,7 @@ using StudentAPIw6.Model.response;
 using StudentAPIw6.AutoMapper;
 using StudentAPIw6.validator;
 using StudentAPIw6.Context;
+using Microsoft.EntityFrameworkCore;
 namespace StudentAPIw6.Services
 {
     public class LopHocService : ILopHocService
@@ -22,30 +23,37 @@ namespace StudentAPIw6.Services
             _appDbContext = appDbContext;
             _business = business;
         }
-
-
         public async Task<LopHocDTO.Response> CreateLopHoc(LopHocDTO.LopHocCreateDTO createLopHocDTO)
         {
-            _business.CheckTenLop(createLopHocDTO.TenLop);
+
+            await _business.CheckTenLop(createLopHocDTO.TenLop);
+            var boMon = await _business.GetBoMonAsync(createLopHocDTO.boMonId);
             //chuyen sang entty
             var lophoc = createLopHocDTO.ToEntity();
+
+            lophoc.BoMonId = boMon.id;
+
             _appDbContext.LopHocs.Add(lophoc);
+            await _appDbContext.SaveChangesAsync();
             return lophoc.ToResponse();
         }
 
         public async Task<bool> DeleteLopHoc(string key)
         {
-            var lp = _business.CheckIdMaLop(key);
+            var lp = await _business.CheckIdMaLop(key);
             _appDbContext.LopHocs.Remove(lp);
+            await _appDbContext.SaveChangesAsync();
             return true;
         }
 
         public async Task<PageResponse<LopHocDTO.Response>> GetAllLopHoc(PaginationRequest request)
         {
             var lp = _appDbContext.LopHocs.AsQueryable();
-            var itemCount = lp.Count();
+            var itemCount = await lp.CountAsync();
             var paged = lp.Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize);
-            var data = LopHocMapper.ToResponseList(paged);
+
+            var pagedList = await paged.ToListAsync();
+            var data = LopHocMapper.ToResponseList(pagedList);
 
             return new PageResponse<LopHocDTO.Response>
             {
@@ -59,13 +67,13 @@ namespace StudentAPIw6.Services
 
         public async Task<LopHocDTO.Response> GetLopHocById(string maLop)
         {
-            var lp = _business.CheckIdMaLop(maLop);
+            var lp = await _business.CheckIdMaLop(maLop);
             return lp.ToResponse();
         }
 
         public async Task<List<ThongKeLopHoc>> ThongKeLopHoc()
         {
-            var result = _appDbContext.SinhViens
+            var result = await _appDbContext.SinhViens
         .GroupBy(sv => sv.LopHocId)
         .Select(group => new ThongKeLopHoc
         {
@@ -79,14 +87,14 @@ namespace StudentAPIw6.Services
 
             DiemThapNhat = group.Min(sv => sv.DiemTB)
         })
-        .ToList();
+        .ToListAsync();
 
             return result;
         }
 
         public async Task<LopHocDTO.Response> UpdateLopHoc(string key, LopHocDTO.LopHocUpdateDTO updateLopHocDTO)
         {
-            var lp = _business.CheckIdMaLop(key);
+            var lp = await _business.CheckIdMaLop(key);
             lp.updateEntity(updateLopHocDTO);
             return lp.ToResponse();
         }

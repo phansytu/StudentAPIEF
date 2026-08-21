@@ -36,7 +36,7 @@ namespace StudentAPIw6.controller
             var rs = await _service.CreateLopHoc(createDTO);
             return CreatedAtAction(
                 nameof(GetLopHocById),
-                new { maLop = rs.MaLop },
+                new { key = rs.Id },
                 rs
             );
         }

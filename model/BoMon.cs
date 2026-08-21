@@ -9,7 +9,6 @@ namespace StudentAPIw6.Model
     {
         [Key]
         public int id { get; set; }
-
         public required string maBM { get; set; }
         [Column("tenMon")]
         public string tenBM { get; set; } = string.Empty;

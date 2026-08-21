@@ -30,6 +30,7 @@ namespace StudentAPIw6.Context
             .HasForeignKey(sv => sv.LopHocId);
 
 
+
         }
 
     }

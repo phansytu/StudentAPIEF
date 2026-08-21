@@ -13,9 +13,9 @@ namespace StudentAPIw6.AutoMapper
         {
             return new LopHoc
             {
-
                 TenLop = createLopHocDTO.TenLop,
-                ChuyenNganh = createLopHocDTO.ChuyenNganh
+                ChuyenNganh = createLopHocDTO.ChuyenNganh,
+                BoMonId = createLopHocDTO.boMonId
             };
         }
         // entity -> response
@@ -23,9 +23,11 @@ namespace StudentAPIw6.AutoMapper
         {
             return new LopHocDTO.Response
             {
+                Id = lopHoc.Id,
                 MaLop = lopHoc.MaLop,
                 TenLop = lopHoc.TenLop,
-                ChuyenNganh = lopHoc.ChuyenNganh
+                ChuyenNganh = lopHoc.ChuyenNganh,
+                BoMonId = lopHoc.BoMonId
             };
         }
         // update -> entity

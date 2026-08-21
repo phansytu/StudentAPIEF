@@ -3,6 +3,7 @@ using StudentAPIw6.Model;
 using static StudentAPIw6.Exceptions.LopHocException;
 using FluentValidation;
 using StudentAPIw6.Context;
+using Microsoft.EntityFrameworkCore;
 namespace StudentAPIw6.validator
 {
     public class LopHocBusinessValidator
@@ -16,7 +17,7 @@ namespace StudentAPIw6.validator
             _appDbContext = appDbContext;
         }
 
-        public LopHoc CheckIdMaLop(string key)
+        public async Task<LopHoc> CheckIdMaLop(string key)
         {
             if (string.IsNullOrEmpty(key))
             {
@@ -24,16 +25,16 @@ namespace StudentAPIw6.validator
             }
             if (int.TryParse(key, out int id))
             {
-                var byId = _appDbContext.LopHocs
-                .Find(id);
+                var byId = await _appDbContext.LopHocs
+                .FindAsync(id);
                 if (byId == null)
                 {
                     throw new LopHocNotFoundException($"Lớp học có Id {id} không tồn tại.");
                 }
                 return byId;
             }
-            var ByMa = _appDbContext.LopHocs
-                .FirstOrDefault(x => x.MaLop == key);
+            var ByMa = await _appDbContext.LopHocs
+                .FirstOrDefaultAsync(x => x.MaLop == key);
             if (ByMa == null)
             {
                 throw new LopHocNotFoundException(
@@ -44,10 +45,10 @@ namespace StudentAPIw6.validator
         }
 
 
-        public void CheckTenLop(string tenLop)
+        public async Task CheckTenLop(string tenLop)
         {
-            var exists = _appDbContext.LopHocs
-                .Any(x => x.TenLop == tenLop);
+            var exists = await _appDbContext.LopHocs
+                .AnyAsync(x => x.TenLop == tenLop);
 
             if (exists)
             {
@@ -55,6 +56,20 @@ namespace StudentAPIw6.validator
                     $"Tên lớp {tenLop} đã tồn tại"
                 );
             }
+        }
+        // Kiểm tra mã bộ môn có tồn tại không
+        public async Task<BoMon> GetBoMonAsync(int MaBM)
+        {
+            var boMon = await _appDbContext.BoMons
+                .FindAsync(MaBM);
+
+            if (boMon == null)
+            {
+                throw new LopHocBadRequestException(
+                    $"Bộ môn '{MaBM}' không tồn tại.");
+            }
+
+            return boMon;
         }
 
 
