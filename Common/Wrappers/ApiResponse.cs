@@ -1,5 +1,5 @@
 
-namespace StudentAPIw6.Model.response
+namespace StudentAPIw6.Common.Wrappers
 {
     public class ApiResponse<T>
     {

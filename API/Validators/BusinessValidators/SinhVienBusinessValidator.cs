@@ -4,7 +4,8 @@ using StudentAPIw6.Model;
 using static StudentAPIw6.Exceptions.StudentException;
 using FluentValidation;
 using StudentAPIw6.Context;
-namespace StudentAPIw6.validator
+using Microsoft.EntityFrameworkCore;
+namespace StudentAPIw6.API.Validators.BusinessValidators
 {
     public class SinhVienBusinessValidator
     {
@@ -16,10 +17,10 @@ namespace StudentAPIw6.validator
             _appDbContext = appDbContext;
         }
 
-        public void CheckEmail(string email)
+        public async Task CheckEmail(string email)
         {
-            var exists = _appDbContext.SinhViens
-                .Any(s => s.Email == email);
+            var exists = await _appDbContext.SinhViens
+                .AnyAsync(s => s.Email == email);
 
             if (exists)
             {
@@ -28,7 +29,7 @@ namespace StudentAPIw6.validator
                 );
             }
         }
-        public SinhVien CheckIdMsv(string key)
+        public async Task<SinhVien> CheckIdMsv(string key)
         {
             if (string.IsNullOrEmpty(key))
             {
@@ -36,20 +37,42 @@ namespace StudentAPIw6.validator
             }
             if (int.TryParse(key, out int id))
             {
-                var byId = _appDbContext.SinhViens
-                .Find(id);
+                var byId = await _appDbContext.SinhViens
+                .FindAsync(id);
                 if (byId == null)
                 {
                     throw new SinhVienNotFoundException($"Lớp học có Id {id} không tồn tại.");
                 }
                 return byId;
             }
-            var ByMa = _appDbContext.SinhViens
-                .FirstOrDefault(x => x.MaSV == key);
+            var ByMa = await _appDbContext.SinhViens
+                .FirstOrDefaultAsync(x => x.MaSV == key);
             if (ByMa == null)
             {
                 throw new SinhVienNotFoundException(
                     $"Lớp {key} không tồn tại"
+                );
+            }
+            return ByMa;
+        }
+        public async Task<SinhVien> CheckId(int id)
+        {
+            var byId = await _appDbContext.SinhViens
+               .FindAsync(id);
+            if (byId == null)
+            {
+                throw new SinhVienNotFoundException($"Lớp học có Id {id} không tồn tại.");
+            }
+            return byId;
+        }
+        public async Task<SinhVien> CheckMsv(string msv)
+        {
+            var ByMa = await _appDbContext.SinhViens
+               .FirstOrDefaultAsync(x => x.MaSV == msv);
+            if (ByMa == null)
+            {
+                throw new SinhVienNotFoundException(
+                    $"Lớp {msv} không tồn tại"
                 );
             }
             return ByMa;

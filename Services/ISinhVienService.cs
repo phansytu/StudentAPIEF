@@ -1,25 +1,23 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using StudentAPIw6.Model;
-using StudentAPIw6.DTOs;
-using StudentAPIw6.Model.response;
 using StudentAPIw6.Model.request;
+using StudentAPIw6.API.DTOs.Response;
+using StudentAPIw6.API.DTOs.Request;
+using StudentAPIw6.Common.Wrappers;
 namespace StudentAPIw6.Services
 {
     public interface ISinhVienService
     {
-        Task<PageResponse<SinhVienDTO.Response>> GetAll(SinhVienQueryRequest request);
+        Task<PageResponse<SinhVienResponseDTO>> GetAll(SinhVienQueryRequest request);
 
         //getbyid
-        Task<SinhVienDTO.Response> GetSinhVienById(string key);
+        Task<SinhVienResponseDTO> GetSinhVienByMsv(string masv);
+        Task<SinhVienResponseDTO> GetSinhVienById(int id);
         //create
-        Task<SinhVienDTO.Response> CreateSinhVien(SinhVienDTO.SinhVienCreateDTO createStudentDTO);
+        Task<SinhVienResponseDTO> CreateSinhVien(SinhVienRequestDTO.SinhVienCreateDTO createStudentDTO);
         //update
-        Task<SinhVienDTO.Response> UpdateSinhVien(string maSV, SinhVienDTO.SinhVienUpdateDTO updateStudentDTO);
+        Task<SinhVienResponseDTO> UpdateSinhVien(string maSV, SinhVienRequestDTO.SinhVienUpdateDTO updateStudentDTO);
         //delete
         Task<bool> DeleteSinhVien(string maSV);
+        Task<PageResponse<SinhVienAdvancedDTO>> GetPagedAdvancedAsync(SinhVienAdvancedRequest request);
 
     }
 }

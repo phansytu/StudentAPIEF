@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using StudentAPIw6.DTOs;
+using StudentAPIw6.API.DTOs.Request;
 using StudentAPIw6.Model.request;
 using StudentAPIw6.Services;
 
@@ -31,7 +31,7 @@ namespace StudentAPIw6.controller
             return Ok(rs);
         }
         [HttpPost]
-        public async Task<IActionResult> CreateLopHoc([FromBody] LopHocDTO.LopHocCreateDTO createDTO)
+        public async Task<IActionResult> CreateLopHoc([FromBody] LopHocRequestDTO.LopHocCreateDTO createDTO)
         {
             var rs = await _service.CreateLopHoc(createDTO);
             return CreatedAtAction(
@@ -51,7 +51,7 @@ namespace StudentAPIw6.controller
         [HttpPut("{maLop}")]
         public async Task<IActionResult> Update(
             string maLop,
-            [FromBody] LopHocDTO.LopHocUpdateDTO dto)
+            [FromBody] LopHocRequestDTO.LopHocUpdateDTO dto)
         {
             var result = await _service.UpdateLopHoc(
                 maLop,

@@ -1,97 +1,93 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using StudentAPIw6.Model;
-using StudentAPIw6.DTOs;
-using StudentAPIw6.Model.response;
+
 using StudentAPIw6.Model.request;
-using StudentAPIw6.Services;
 using StudentAPIw6.AutoMapper;
 
-using StudentAPIw6.validator;
-using StudentAPIw6.Context;
+using StudentAPIw6.API.DTOs.Response;
+using StudentAPIw6.API.DTOs.Request;
+using StudentAPIw6.API.Validators.BusinessValidators;
+using StudentAPIw6.Common.Wrappers;
+
 namespace StudentAPIw6.Services
 {
     public class SinhVienService : ISinhVienService
     {
-        public readonly AppDbContext _appDbContext;
+        private readonly ISinhVienRepository _repository;
         private readonly SinhVienBusinessValidator _businessValidator;
-        public SinhVienService(AppDbContext dataSinhVien, SinhVienBusinessValidator businessValidator)
+
+        public SinhVienService(
+            ISinhVienRepository repository,
+            SinhVienBusinessValidator businessValidator)
         {
-            _appDbContext = dataSinhVien;
+            _repository = repository;
             _businessValidator = businessValidator;
         }
 
-        public async Task<PageResponse<SinhVienDTO.Response>> GetAll(SinhVienQueryRequest request)
+        public async Task<PageResponse<SinhVienResponseDTO>> GetAll(SinhVienQueryRequest request)
         {
-            var students = _appDbContext.SinhViens.AsQueryable();
-            //tim kiem
-            if (!string.IsNullOrWhiteSpace(request.Keyword))
-            {
-                students = students.Where(x =>
-                x.MaSV.Contains(request.Keyword) ||
-                x.HoTen.Contains(request.Keyword) ||
-                x.Email.Contains(request.Keyword));
-            }
-            //loc gioi tinh
-            if (request.GioiTinh.HasValue)
-            {
-                students = students.Where(x => x.GioiTinh == request.GioiTinh.Value);
-            }
-            //loc diem
-            if (request.DiemTu.HasValue)
-            {
-                students = students.Where(x => x.DiemTB >= request.DiemTu.Value);
-            }
-            if (request.DiemDen.HasValue)
-                students = students.Where(x => x.DiemTB <= request.DiemDen.Value);
-            //sap xep
-            students = request.SortBy?.ToLower() switch
-            {
-                "hoten" => request.Descending ? students.OrderByDescending(x => x.HoTen) : students.OrderBy(x => x.HoTen),
-                "diemtb" => request.Descending ? students.OrderByDescending(x => x.DiemTB) : students.OrderBy(x => x.DiemTB),
-                _ => students
-            };
+            var (data, totalCount) = await _repository.GetAllAsync(request);
 
-            var itemCount = students.Count();
-            var paged = students.Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize);
-            var data = StudentMapper.ToResponseList(paged);
-
-            return new PageResponse<SinhVienDTO.Response>
+            return new PageResponse<SinhVienResponseDTO>
             {
-                Data = data,
-                TotalCount = itemCount,
-                TotalPages = (int)Math.Ceiling((double)itemCount / request.PageSize),
+                Data = StudentMapper.ToResponseList(data.AsQueryable()),
+                TotalCount = totalCount,
+                TotalPages = (int)Math.Ceiling((double)totalCount / request.PageSize),
                 PageNumber = request.PageNumber
             };
         }
 
-
-        public async Task<SinhVienDTO.Response> GetSinhVienById(string key)
+        public async Task<SinhVienResponseDTO> GetSinhVienById(int id)
         {
-            var sv = _businessValidator.CheckIdMsv(key);
+            var sv = await _businessValidator.CheckId(id); // validator cũng nên gọi qua repository, không đụng DbContext
             return sv.ToResponse();
         }
-        public async Task<SinhVienDTO.Response> CreateSinhVien(SinhVienDTO.SinhVienCreateDTO createStudentDTO)
+
+        public async Task<SinhVienResponseDTO> GetSinhVienByMsv(string masv)
         {
-            _businessValidator.CheckEmail(createStudentDTO.Email);
+            var sv = await _businessValidator.CheckMsv(masv);
+            return sv.ToResponse();
+        }
+
+        public async Task<SinhVienResponseDTO> CreateSinhVien(SinhVienRequestDTO.SinhVienCreateDTO createStudentDTO)
+        {
+            await _businessValidator.CheckEmail(createStudentDTO.Email);
+
             var student = createStudentDTO.ToEntity();
-            _appDbContext.SinhViens.Add(student);
+            await _repository.AddAsync(student);
+            await _repository.SaveChangesAsync(); // trước đây thiếu -> giờ có
+
             return student.ToResponse();
         }
-        public async Task<SinhVienDTO.Response> UpdateSinhVien(string maSV, SinhVienDTO.SinhVienUpdateDTO updateStudentDTO)
+
+        public async Task<SinhVienResponseDTO> UpdateSinhVien(string maSV, SinhVienRequestDTO.SinhVienUpdateDTO updateStudentDTO)
         {
-            var sv = _businessValidator.CheckIdMsv(maSV);
+            var sv = await _businessValidator.CheckIdMsv(maSV);
             sv.updateEntity(updateStudentDTO);
+
+            await _repository.UpdateAsync(sv);
+            await _repository.SaveChangesAsync(); // trước đây thiếu -> giờ có
+
             return sv.ToResponse();
         }
 
         public async Task<bool> DeleteSinhVien(string maSV)
         {
-            var sv = _businessValidator.CheckIdMsv(maSV);
-            _appDbContext.SinhViens.Remove(sv);
-            return true;
+            var sv = await _businessValidator.CheckMsv(maSV);
+            await _repository.DeleteAsync(sv);
+            return await _repository.SaveChangesAsync();
         }
+
+        public async Task<PageResponse<SinhVienAdvancedDTO>> GetPagedAdvancedAsync(SinhVienAdvancedRequest request)
+        {
+            if (request.PageIndex < 1) request.PageIndex = 1;
+            if (request.PageSize < 1) request.PageSize = 10;
+
+            if (request.MinDiem.HasValue && request.MaxDiem.HasValue && request.MinDiem > request.MaxDiem)
+                throw new ArgumentException("Điểm tối thiểu không được lớn hơn điểm tối đa.");
+
+            return await _repository.GetPagedAdvancedAsync(request);
+        }
+
+
+
     }
 }

@@ -4,7 +4,7 @@ using static StudentAPIw6.Exceptions.LopHocException;
 using FluentValidation;
 using StudentAPIw6.Context;
 using Microsoft.EntityFrameworkCore;
-namespace StudentAPIw6.validator
+namespace StudentAPIw6.API.Validators.BusinessValidators
 {
     public class LopHocBusinessValidator
     {

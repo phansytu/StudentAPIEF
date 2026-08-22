@@ -1,16 +1,13 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using StudentAPIw6.Model;
-using StudentAPIw6.DTOs;
-
 using StudentAPIw6.Model.request;
 using StudentAPIw6.Model.response;
 using StudentAPIw6.AutoMapper;
-using StudentAPIw6.validator;
 using StudentAPIw6.Context;
 using Microsoft.EntityFrameworkCore;
+using StudentAPIw6.API.DTOs.Response;
+using StudentAPIw6.API.DTOs.Request;
+using StudentAPIw6.API.Validators.BusinessValidators;
+using StudentAPIw6.Common.Wrappers;
 namespace StudentAPIw6.Services
 {
     public class LopHocService : ILopHocService
@@ -23,7 +20,7 @@ namespace StudentAPIw6.Services
             _appDbContext = appDbContext;
             _business = business;
         }
-        public async Task<LopHocDTO.Response> CreateLopHoc(LopHocDTO.LopHocCreateDTO createLopHocDTO)
+        public async Task<LopHocResponseDTO> CreateLopHoc(LopHocRequestDTO.LopHocCreateDTO createLopHocDTO)
         {
 
             await _business.CheckTenLop(createLopHocDTO.TenLop);
@@ -46,7 +43,7 @@ namespace StudentAPIw6.Services
             return true;
         }
 
-        public async Task<PageResponse<LopHocDTO.Response>> GetAllLopHoc(PaginationRequest request)
+        public async Task<PageResponse<LopHocResponseDTO>> GetAllLopHoc(PaginationRequest request)
         {
             var lp = _appDbContext.LopHocs.AsQueryable();
             var itemCount = await lp.CountAsync();
@@ -55,7 +52,7 @@ namespace StudentAPIw6.Services
             var pagedList = await paged.ToListAsync();
             var data = LopHocMapper.ToResponseList(pagedList);
 
-            return new PageResponse<LopHocDTO.Response>
+            return new PageResponse<LopHocResponseDTO>
             {
                 Data = data,
                 TotalCount = itemCount,
@@ -65,7 +62,7 @@ namespace StudentAPIw6.Services
 
         }
 
-        public async Task<LopHocDTO.Response> GetLopHocById(string maLop)
+        public async Task<LopHocResponseDTO> GetLopHocById(string maLop)
         {
             var lp = await _business.CheckIdMaLop(maLop);
             return lp.ToResponse();
@@ -92,13 +89,13 @@ namespace StudentAPIw6.Services
             return result;
         }
 
-        public async Task<LopHocDTO.Response> UpdateLopHoc(string key, LopHocDTO.LopHocUpdateDTO updateLopHocDTO)
+        public async Task<LopHocResponseDTO> UpdateLopHoc(string key, LopHocRequestDTO.LopHocUpdateDTO updateLopHocDTO)
         {
             var lp = await _business.CheckIdMaLop(key);
             lp.updateEntity(updateLopHocDTO);
             return lp.ToResponse();
         }
-
-
     }
+
+
 }

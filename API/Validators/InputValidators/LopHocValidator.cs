@@ -1,11 +1,12 @@
 using FluentValidation;
-using StudentAPIw6.DTOs;
-namespace StudentAPIw6.validator
+using StudentAPIw6.API.DTOs.Request;
+
+namespace StudentAPIw6.API.Validators.InputValidators
 {
     public class LopHocValidator
     {
         public class LopHocCreateValidator
-            : AbstractValidator<LopHocDTO.LopHocCreateDTO>
+            : AbstractValidator<LopHocRequestDTO.LopHocCreateDTO>
         {
             public LopHocCreateValidator()
             {
@@ -23,7 +24,7 @@ namespace StudentAPIw6.validator
             }
         }
         public class LopHocUpdateValidator
-            : AbstractValidator<LopHocDTO.LopHocUpdateDTO>
+            : AbstractValidator<LopHocRequestDTO.LopHocUpdateDTO>
         {
             public LopHocUpdateValidator()
             {
@@ -41,7 +42,7 @@ namespace StudentAPIw6.validator
             }
         }
         public class LopHocDeleteValidator
-            : AbstractValidator<LopHocDTO.LopHocDeleteDTO>
+            : AbstractValidator<LopHocRequestDTO.LopHocDeleteDTO>
         {
             public LopHocDeleteValidator()
             {

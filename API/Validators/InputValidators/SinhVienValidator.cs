@@ -1,12 +1,12 @@
 using System;
 using FluentValidation;
-using StudentAPIw6.DTOs;
+using StudentAPIw6.API.DTOs.Request;
 
-namespace StudentAPIw6.validator
+namespace StudentAPIw6.API.Validators.InputValidators
 {
     public class SinhVienValidator
     {
-        public class SinhVienCreateValidator : AbstractValidator<SinhVienDTO.SinhVienCreateDTO>
+        public class SinhVienCreateValidator : AbstractValidator<SinhVienRequestDTO.SinhVienCreateDTO>
         {
             public SinhVienCreateValidator()
             {
@@ -39,7 +39,7 @@ namespace StudentAPIw6.validator
         }
 
         // 2. Validator cho Update DTO
-        public class SinhVienUpdateValidator : AbstractValidator<SinhVienDTO.SinhVienUpdateDTO>
+        public class SinhVienUpdateValidator : AbstractValidator<SinhVienRequestDTO.SinhVienUpdateDTO>
         {
             public SinhVienUpdateValidator()
             {

@@ -2,14 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using StudentAPIw6.API.DTOs.Request;
+using StudentAPIw6.API.DTOs.Response;
 using StudentAPIw6.Model;
-using StudentAPIw6.DTOs;
 namespace StudentAPIw6.AutoMapper
 {
     public static class LopHocMapper
     {
         //create -> entity
-        public static LopHoc ToEntity(this LopHocDTO.LopHocCreateDTO createLopHocDTO)
+        public static LopHoc ToEntity(this LopHocRequestDTO.LopHocCreateDTO createLopHocDTO)
         {
             return new LopHoc
             {
@@ -19,9 +20,9 @@ namespace StudentAPIw6.AutoMapper
             };
         }
         // entity -> response
-        public static LopHocDTO.Response ToResponse(this LopHoc lopHoc)
+        public static LopHocResponseDTO ToResponse(this LopHoc lopHoc)
         {
-            return new LopHocDTO.Response
+            return new LopHocResponseDTO
             {
                 Id = lopHoc.Id,
                 MaLop = lopHoc.MaLop,
@@ -31,13 +32,13 @@ namespace StudentAPIw6.AutoMapper
             };
         }
         // update -> entity
-        public static void updateEntity(this LopHoc lopHoc, LopHocDTO.LopHocUpdateDTO updateLopHocDTO)
+        public static void updateEntity(this LopHoc lopHoc, LopHocRequestDTO.LopHocUpdateDTO updateLopHocDTO)
         {
             lopHoc.TenLop = updateLopHocDTO.TenLop;
             lopHoc.ChuyenNganh = updateLopHocDTO.ChuyenNganh;
         }
         // entity -> response
-        public static List<LopHocDTO.Response> ToResponseList(this IEnumerable<LopHoc> lopHocs)
+        public static List<LopHocResponseDTO> ToResponseList(this IEnumerable<LopHoc> lopHocs)
         {
             return lopHocs.Select(lp => lp.ToResponse()).ToList();
 

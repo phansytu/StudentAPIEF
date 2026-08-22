@@ -1,6 +1,7 @@
 
 using StudentAPIw6.Model;
-using StudentAPIw6.DTOs;
+using StudentAPIw6.API.DTOs.Request;
+using StudentAPIw6.API.DTOs.Response;
 
 
 namespace StudentAPIw6.AutoMapper
@@ -8,7 +9,7 @@ namespace StudentAPIw6.AutoMapper
     public static class StudentMapper
     {
         // create -> entity
-        public static SinhVien ToEntity(this SinhVienDTO.SinhVienCreateDTO createStudentDTO)
+        public static SinhVien ToEntity(this SinhVienRequestDTO.SinhVienCreateDTO createStudentDTO)
         {
             return new SinhVien
             {
@@ -22,10 +23,11 @@ namespace StudentAPIw6.AutoMapper
             };
         }
         // entity -> response
-        public static SinhVienDTO.Response ToResponse(this SinhVien student)
+        public static SinhVienResponseDTO ToResponse(this SinhVien student)
         {
-            return new SinhVienDTO.Response
+            return new SinhVienResponseDTO
             {
+                Id = student.Id,
                 MaSV = student.MaSV,
                 HoTen = student.HoTen,
                 NgaySinh = student.NgaySinh,
@@ -36,7 +38,7 @@ namespace StudentAPIw6.AutoMapper
             };
         }
         // update -> entity
-        public static void updateEntity(this SinhVien student, SinhVienDTO.SinhVienUpdateDTO updateStudentDTO)
+        public static void updateEntity(this SinhVien student, SinhVienRequestDTO.SinhVienUpdateDTO updateStudentDTO)
         {
 
             student.HoTen = updateStudentDTO.HoTen;
@@ -47,7 +49,7 @@ namespace StudentAPIw6.AutoMapper
             student.LopHocId = updateStudentDTO.lopHocId;
         }
         // entity -> response
-        public static List<SinhVienDTO.Response> ToResponseList(this IEnumerable<SinhVien> students)
+        public static List<SinhVienResponseDTO> ToResponseList(this IEnumerable<SinhVien> students)
         {
             return students.Select(student => student.ToResponse()).ToList();
 

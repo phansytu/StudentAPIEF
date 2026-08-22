@@ -3,23 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace StudentAPIw6.DTOs
+namespace StudentAPIw6.API.DTOs.Request
 {
-    public class SinhVienDTO
+    public class SinhVienRequestDTO
     {
-        public class Response
-        {
-            public string? MaSV { get; set; }
-            public string? HoTen { get; set; }
-            public bool GioiTinh { get; set; }
-            public DateTime NgaySinh { get; set; }
-            public string? Email { get; set; }
-            public decimal DiemTB { get; set; }
-            public int LopHocId { get; set; }
-        }
-
-
-
         public class SinhVienCreateDTO
         {
             public required string HoTen { get; set; }
@@ -40,5 +27,6 @@ namespace StudentAPIw6.DTOs
             public required int lopHocId { get; set; }
 
         }
+
     }
 }

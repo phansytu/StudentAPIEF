@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using StudentAPIw6.DTOs;
+using StudentAPIw6.API.DTOs.Request;
 using StudentAPIw6.Model.request;
 using StudentAPIw6.Services;
 
@@ -30,22 +30,30 @@ namespace StudentAPIw6.controller
         }
         //getbyid
         [HttpGet("{maSV}")]
-        public async Task<IActionResult> GetById([FromRoute] string maSV)
+        public async Task<IActionResult> GetByMsv([FromRoute] string maSV)
         {
-            var result = await _service.GetSinhVienById(maSV);
+            var result = await _service.GetSinhVienByMsv(maSV);
 
             return Ok(result);
         }
+        [HttpGet("sinhvien/{id}")]
+        public async Task<IActionResult> GetById([FromRoute] int id)
+        {
+            var result = await _service.GetSinhVienById(id);
+
+            return Ok(result);
+        }
+
         //create
         [HttpPost]
         public async Task<IActionResult> Create(
-            [FromBody] SinhVienDTO.SinhVienCreateDTO dto)
+            [FromBody] SinhVienRequestDTO.SinhVienCreateDTO dto)
         {
             var result = await _service.CreateSinhVien(dto);
 
             return CreatedAtAction(
                 nameof(GetById),
-                new { maSV = result.MaSV },
+                new { maSV = result.Id },
                 result
             );
         }
@@ -53,7 +61,7 @@ namespace StudentAPIw6.controller
         [HttpPut("{maSV}")]
         public async Task<IActionResult> Update(
             string maSV,
-            [FromBody] SinhVienDTO.SinhVienUpdateDTO dto)
+            [FromBody] SinhVienRequestDTO.SinhVienUpdateDTO dto)
         {
             var result = await _service.UpdateSinhVien(
                 maSV,

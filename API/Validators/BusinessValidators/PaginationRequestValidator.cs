@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using FluentValidation;
 
 using StudentAPIw6.Model.request;
-namespace StudentAPIw6.validator
+namespace StudentAPIw6.API.Validators.BusinessValidators
 {
     public class PaginationRequestValidator : AbstractValidator<PaginationRequest>
     {
