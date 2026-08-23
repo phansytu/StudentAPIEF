@@ -26,8 +26,48 @@ API quản lý Sinh viên - Lớp học
 | POST | `/api/SinhVien` | Tạo sinh viên mới |
 | PUT | `/api/SinhVien/{maSV}` | Cập nhật sinh viên |
 | DELETE | `/api/SinhVien/{maSV}` | Xoá sinh viên |
+### Bộ môn — `/api/BoMon`
 
+| Method | Route | Mô tả |
+|---|---|---|
+| GET | `/api/BoMon` | Lấy danh sách bộ môn (phân trang) |
+| GET | `/api/BoMon/{maBoMon}` | Lấy chi tiết 1 bộ môn |
+| POST | `/api/BoMon` | Tạo bộ môn mới |
+| PUT | `/api/BoMon/{maBoMon}` | Cập nhật bộ môn |
+| DELETE | `/api/BoMon/{maBoMon}` | Xoá bộ môn |
+
+### Dashboard / Báo cáo — `/api/Dashboard`
+
+| Method | Route | Mô tả |
+|---|---|---|
+| GET | `/api/Dashboard/summary` | Thống kê tổng quan (tổng SV, tổng lớp, tổng bộ môn, điểm TB toàn trường, số SV giỏi) |
+| GET | `/api/Dashboard/bao-cao-chi-tiet-sinh-vien` | Báo cáo chi tiết sinh viên (tìm kiếm, lọc theo lớp/bộ môn, phân trang) |
+| GET | `/api/Dashboard/bao-cao-thong-ke-theo-lop` | Báo cáo thống kê theo lớp (sĩ số, tỉ lệ nam/nữ, điểm TB/cao nhất/thấp nhất) |
 ---
+---
+
+## Database Objects
+
+### Stored Procedures
+
+| Tên | Chức năng |
+|---|---|
+| `sp_SinhVien_GetPagedAdvanced` | Lọc/phân trang sinh viên nâng cao (từ khoá, lớp, bộ môn, khoảng điểm), trả kèm `@TotalRecords` output |
+| `sp_Dashboard_GetSummaryStats` | Trả về thống kê tổng quan toàn hệ thống cho Dashboard |
+
+### Views
+
+| Tên | Chức năng |
+|---|---|
+| `vw_BaoCao_ChiTietSinhVien` | Báo cáo chi tiết từng sinh viên: giới tính, tuổi, xếp loại, lớp, bộ môn |
+| `vw_BaoCao_ThongKeTheoLop` | Báo cáo thống kê theo từng lớp: sĩ số, tỉ lệ nam/nữ, điểm TB/cao nhất/thấp nhất |
+
+### Indexes
+
+| Tên | Bảng | Cột | Mục đích |
+|---|---|---|---|
+| `IX_LopHoc_boMonId` | `LopHoc` | `boMonId` | Tối ưu JOIN giữa `LopHoc` và `BoMon` |
+| `IX_SinhVien_lopHocId` | `SinhVien` | `lopHocId` | Tối ưu JOIN giữa `SinhVien` và `LopHoc` |
 2. Test Plan — Checklist chạy tay (Swagger / Postman)
 
 ### 2.1 Sinh viên — Create (`POST /api/SinhVien`)
@@ -105,3 +145,70 @@ Sau khi chạy, mở Swagger UI (mặc định `https://localhost:{port}/swagger
 mục 3, đối chiếu với checklist mục 5.
 
 ---
+---
+
+## Hướng dẫn Migration
+
+### 1. Migration cho Entity (EF Core)
+
+Dự án dùng EF Core Migration để quản lý schema của các bảng ánh xạ Entity: `SinhVien`, `LopHoc`, `BoMon`.
+
+**Tạo migration mới** (sau khi sửa Entity hoặc `AppDbContext.OnModelCreating`):
+```bash
+dotnet ef migrations add <TenMigrationMoTaThayDoi>
+```
+Ví dụ:
+```bash
+dotnet ef migrations add AddBoMonEntity
+dotnet ef migrations add AddIndexOnForeignKeys
+```
+
+**Áp dụng migration vào database:**
+```bash
+dotnet ef database update
+```
+
+**Xem lại danh sách migration đã áp dụng:**
+```bash
+dotnet ef migrations list
+```
+
+**Rollback về 1 migration cụ thể** (nếu cần huỷ thay đổi gần nhất):
+```bash
+dotnet ef database update <TenMigrationTruocDo>
+```
+
+**Xoá migration cuối cùng chưa apply vào DB** (chỉ dùng khi chưa chạy `database update`):
+```bash
+dotnet ef migrations remove
+```
+
+### 2. Migration cho Stored Procedure / View / Index (SQL script tay)
+
+Vì EF Core Migration không quản lý tốt Stored Procedure và View phức tạp, các đối tượng này được viết và chạy bằng SQL script tay, **không** thông qua `dotnet ef`. Toàn bộ script được lưu tại: 
+```text
+test(1908).sql
+```
+**Cách áp dụng khi setup database mới hoặc pull code có script mới:**
+1. Mở SQL Server Management Studio (SSMS), kết nối tới database của project.
+2. Chạy lần lượt từng file theo đúng thứ tự thư mục ở trên (Stored Procedures → Views → Indexes), vì View có thể phụ thuộc vào bảng đã tồn tại, Index tạo sau cùng để tránh xung đột khi bảng đang thay đổi cấu trúc.
+3. Toàn bộ script dùng `CREATE OR ALTER`, riêng phần `Indexes` dùng `CREATE NONCLUSTERED INDEX` — **chạy lại sẽ báo lỗi trùng tên** nếu index đã tồn tại, cần `DROP INDEX` trước nếu muốn tạo lại.
+
+### 3. Lưu ý khi kết hợp cả 2 (tránh conflict)
+
+Vì Index (`IX_LopHoc_boMonId`, `IX_SinhVien_lopHocId`) được tạo bằng SQL script tay **trước khi** khai báo trong `AppDbContext` qua Fluent API, nếu sau này chạy `dotnet ef migrations add` mà model đã khai báo `HasIndex(...)`, EF Core sẽ tạo ra migration chứa `CreateIndex` — nếu chạy `dotnet ef database update` trên database đã có sẵn index đó, sẽ gặp lỗi:
+```text
+There is already an object named 'IX_LopHoc_boMonId' in the database.
+```
+**Cách xử lý:** mở file migration vừa được tạo trong `Context/Migrations/`, xoá hoặc comment đoạn `migrationBuilder.CreateIndex(...)` tương ứng (giữ nguyên các thay đổi khác nếu có), rồi mới chạy `dotnet ef database update`.
+
+### 4. Thứ tự setup database từ đầu (máy mới / clone project lần đầu)
+
+```bash
+# 1. Tạo bảng theo Entity qua EF Core Migration
+dotnet ef database update
+
+# 2. Chạy các script SQL tay theo đúng thứ tự
+#    (mở SSMS, chạy lần lượt các file trong Context/SqlScripts/)
+#    StoredProcedures -> Views -> Indexes
+```
