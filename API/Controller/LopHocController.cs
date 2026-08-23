@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using StudentAPIw6.API.DTOs.Request;
-using StudentAPIw6.Model.request;
 using StudentAPIw6.Services;
 
 namespace StudentAPIw6.controller

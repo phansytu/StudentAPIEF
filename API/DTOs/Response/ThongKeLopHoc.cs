@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace StudentAPIw6.Model.response
+namespace StudentAPIw6.API.DTOs.response
 {
     public class ThongKeLopHoc
     {

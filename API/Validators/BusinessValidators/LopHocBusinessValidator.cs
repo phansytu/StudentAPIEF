@@ -1,6 +1,6 @@
 using System.Linq;
 using StudentAPIw6.Model;
-using static StudentAPIw6.Exceptions.LopHocException;
+using static StudentAPIw6.API.Exceptions.LopHocException;
 using FluentValidation;
 using StudentAPIw6.Context;
 using Microsoft.EntityFrameworkCore;

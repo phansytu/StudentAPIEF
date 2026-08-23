@@ -1,6 +1,4 @@
 using System;
-using StudentAPIw6.Model.request;
-using StudentAPIw6.Model.response;
 using StudentAPIw6.AutoMapper;
 using StudentAPIw6.Context;
 using Microsoft.EntityFrameworkCore;
@@ -8,16 +6,18 @@ using StudentAPIw6.API.DTOs.Response;
 using StudentAPIw6.API.DTOs.Request;
 using StudentAPIw6.API.Validators.BusinessValidators;
 using StudentAPIw6.Common.Wrappers;
+using StudentAPIw6.Repository;
+using StudentAPIw6.API.DTOs.response;
 namespace StudentAPIw6.Services
 {
     public class LopHocService : ILopHocService
     {
-        private readonly AppDbContext _appDbContext;
+        private readonly ILopHocRepository _repository;
 
         private readonly LopHocBusinessValidator _business;
-        public LopHocService(AppDbContext appDbContext, LopHocBusinessValidator business)
+        public LopHocService(ILopHocRepository repository, LopHocBusinessValidator business)
         {
-            _appDbContext = appDbContext;
+            _repository = repository;
             _business = business;
         }
         public async Task<LopHocResponseDTO> CreateLopHoc(LopHocRequestDTO.LopHocCreateDTO createLopHocDTO)
@@ -30,33 +30,28 @@ namespace StudentAPIw6.Services
 
             lophoc.BoMonId = boMon.id;
 
-            _appDbContext.LopHocs.Add(lophoc);
-            await _appDbContext.SaveChangesAsync();
+            await _repository.AddAsync(lophoc);
+            await _repository.SaveChangesAsync();
             return lophoc.ToResponse();
         }
 
         public async Task<bool> DeleteLopHoc(string key)
         {
             var lp = await _business.CheckIdMaLop(key);
-            _appDbContext.LopHocs.Remove(lp);
-            await _appDbContext.SaveChangesAsync();
+            await _repository.DeleteAsync(lp);
+            await _repository.SaveChangesAsync();
             return true;
         }
 
         public async Task<PageResponse<LopHocResponseDTO>> GetAllLopHoc(PaginationRequest request)
         {
-            var lp = _appDbContext.LopHocs.AsQueryable();
-            var itemCount = await lp.CountAsync();
-            var paged = lp.Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize);
-
-            var pagedList = await paged.ToListAsync();
-            var data = LopHocMapper.ToResponseList(pagedList);
+            var (data, totalCount) = await _repository.GetAllAsync(request);
 
             return new PageResponse<LopHocResponseDTO>
             {
-                Data = data,
-                TotalCount = itemCount,
-                TotalPages = (int)Math.Ceiling((double)itemCount / request.PageSize),
+                Data = LopHocMapper.ToResponseList(data),
+                TotalCount = totalCount,
+                TotalPages = (int)Math.Ceiling((double)totalCount / request.PageSize),
                 PageNumber = request.PageNumber
             };
 
@@ -70,22 +65,7 @@ namespace StudentAPIw6.Services
 
         public async Task<List<ThongKeLopHoc>> ThongKeLopHoc()
         {
-            var result = await _appDbContext.SinhViens
-        .GroupBy(sv => sv.LopHocId)
-        .Select(group => new ThongKeLopHoc
-        {
-            lopHocId = group.Key,
-
-            SoLuongSinhVien = group.Count(),
-
-            DiemTrungBinh = group.Average(sv => sv.DiemTB),
-
-            DiemCaoNhat = group.Max(sv => sv.DiemTB),
-
-            DiemThapNhat = group.Min(sv => sv.DiemTB)
-        })
-        .ToListAsync();
-
+            var result = await _repository.ThongKeLopHocAsync();
             return result;
         }
 

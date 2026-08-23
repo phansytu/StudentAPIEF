@@ -1,7 +1,7 @@
 using System.Linq;
 
 using StudentAPIw6.Model;
-using static StudentAPIw6.Exceptions.StudentException;
+using static StudentAPIw6.API.Exceptions.StudentException;
 using FluentValidation;
 using StudentAPIw6.Context;
 using Microsoft.EntityFrameworkCore;
@@ -61,7 +61,7 @@ namespace StudentAPIw6.API.Validators.BusinessValidators
                .FindAsync(id);
             if (byId == null)
             {
-                throw new SinhVienNotFoundException($"Lớp học có Id {id} không tồn tại.");
+                throw new SinhVienNotFoundException($"sinh vien có Id {id} không tồn tại.");
             }
             return byId;
         }

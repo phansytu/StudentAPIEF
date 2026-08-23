@@ -1,10 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Mvc;
 using StudentAPIw6.API.DTOs.Request;
-using StudentAPIw6.Model.request;
+
 using StudentAPIw6.Services;
 
 namespace StudentAPIw6.controller
@@ -77,7 +74,14 @@ namespace StudentAPIw6.controller
 
             return NoContent();
         }
-
+        [HttpGet("advanced")]
+        public async Task<IActionResult> getAdvancedPage(
+             [FromQuery] SinhVienAdvancedRequest request
+        )
+        {
+            var rs = await _service.GetPagedAdvancedAsync(request);
+            return Ok(rs);
+        }
 
     }
 }

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 using StudentAPIw6.Model;
+using StudentAPIw6.Model.Views;
 
 namespace StudentAPIw6.Context
 {
@@ -14,6 +15,8 @@ namespace StudentAPIw6.Context
         public DbSet<SinhVien> SinhViens => Set<SinhVien>();
         public DbSet<LopHoc> LopHocs => Set<LopHoc>();
         public DbSet<BoMon> BoMons => Set<BoMon>();
+        public DbSet<BaoCaoChiTietSinhVien> BaoCaoChiTietSinhViens { get; set; }
+        public DbSet<ThongKeTheoLop> ThongKeTheoLops { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -29,9 +32,24 @@ namespace StudentAPIw6.Context
             .WithMany(lh => lh.SinhViens)
             .HasForeignKey(sv => sv.LopHocId);
 
+            // Index trên khóa ngoại LopHoc.boMonId
+            modelBuilder.Entity<LopHoc>()
+               .HasIndex(lh => lh.BoMonId)
+               .HasDatabaseName("IX_LopHoc_boMonId");
+
+            // Index trên khóa ngoại SinhVien.lopHocId
+            modelBuilder.Entity<SinhVien>()
+                .HasIndex(sv => sv.LopHocId)
+                .HasDatabaseName("IX_SinhVien_lopHocId");
 
 
+            modelBuilder.Entity<BaoCaoChiTietSinhVien>().ToView("vw_BaoCao_ChiTietSinhVien");
+            modelBuilder.Entity<ThongKeTheoLop>().ToView("vw_BaoCao_ThongKeTheoLop");
         }
 
+    }
+
+    public class ThongKeTheoLop
+    {
     }
 }

@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using StudentAPIw6.API.DTOs.Request;
 
-namespace StudentAPIw6.Model.request
+namespace StudentAPIw6.API.DTOs.Request
 {
     public class SinhVienQueryRequest : PaginationRequest
     {

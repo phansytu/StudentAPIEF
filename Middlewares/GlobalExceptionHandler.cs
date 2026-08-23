@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using StudentAPIw6.Exceptions;
+using StudentAPIw6.API.Exceptions;
 namespace StudentAPIw6.API.Middlewares
 {
     public class GlobalExceptionHandler : IExceptionHandler

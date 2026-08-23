@@ -1,4 +1,4 @@
-namespace StudentAPIw6.Model.request
+namespace StudentAPIw6.API.DTOs.Request
 {
     public class PaginationRequest
     {

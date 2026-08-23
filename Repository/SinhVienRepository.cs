@@ -5,9 +5,8 @@ using StudentAPIw6.Model;
 using StudentAPIw6.Context;
 using StudentAPIw6.API.DTOs.Request;
 using StudentAPIw6.API.DTOs.Response;
-using StudentAPIw6.Model.response;
-using StudentAPIw6.Model.request;
 using StudentAPIw6.Common.Wrappers;
+
 
 namespace StudentAPIw6.Services
 {
@@ -118,29 +117,36 @@ namespace StudentAPIw6.Services
             command.Parameters.Add(totalRecordsParameter);
 
             await connection.OpenAsync();
-            await using var reader = await command.ExecuteReaderAsync();
+            using (var reader = await command.ExecuteReaderAsync())
 
-            while (await reader.ReadAsync())
             {
-                response.Data.Add(new SinhVienAdvancedDTO
+
+                while (await reader.ReadAsync())
                 {
-                    Id = reader.GetInt32(reader.GetOrdinal("id")),
-                    Msv = reader.GetString(reader.GetOrdinal("msv")),
-                    HoTen = reader.GetString(reader.GetOrdinal("hoTen")),
-                    GioiTinh = reader.IsDBNull(reader.GetOrdinal("gioiTinh"))
-                        ? false
-                        : reader.GetBoolean(reader.GetOrdinal("gioiTinh")),
-                    NgaySinh = reader.GetDateTime(reader.GetOrdinal("ngaySinh")),
-                    Email = reader.IsDBNull(reader.GetOrdinal("email"))
-                        ? null
-                        : reader.GetString(reader.GetOrdinal("email")),
-                    DiemTb = reader.GetDecimal(reader.GetOrdinal("diemTb")),
-                    TenLop = reader.GetString(reader.GetOrdinal("tenLop")),
-                    TenMon = reader.GetString(reader.GetOrdinal("tenMon"))
-                });
+                    response.Data.Add(new SinhVienAdvancedDTO
+                    {
+                        Id = reader.GetInt32(reader.GetOrdinal("id")),
+                        Msv = reader.GetString(reader.GetOrdinal("msv")),
+                        HoTen = reader.GetString(reader.GetOrdinal("hoTen")),
+                        GioiTinh = reader.IsDBNull(reader.GetOrdinal("gioiTinh"))
+                            ? false
+                            : reader.GetBoolean(reader.GetOrdinal("gioiTinh")),
+                        NgaySinh = reader.GetDateTime(reader.GetOrdinal("ngaySinh")),
+                        Email = reader.IsDBNull(reader.GetOrdinal("email"))
+                            ? null
+                            : reader.GetString(reader.GetOrdinal("email")),
+                        DiemTb = reader.GetDecimal(reader.GetOrdinal("diemTb")),
+                        TenLop = reader.GetString(reader.GetOrdinal("tenLop")),
+                        TenMon = reader.GetString(reader.GetOrdinal("tenMon"))
+                    });
+                }
             }
 
-            response.TotalPages = (int)totalRecordsParameter.Value;
+            response.TotalCount = totalRecordsParameter.Value == DBNull.Value
+    ? 0
+    : Convert.ToInt32(totalRecordsParameter.Value);
+
+            response.TotalPages = (int)Math.Ceiling((double)response.TotalCount / request.PageSize);
 
             return response;
         }

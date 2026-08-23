@@ -1,13 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using StudentAPIw6.Model;
-using StudentAPIw6.Model.request;
-using StudentAPIw6.Model.response;
+
 using StudentAPIw6.API.DTOs.Response;
 using StudentAPIw6.API.DTOs.Request;
 using StudentAPIw6.Common.Wrappers;
+using StudentAPIw6.API.DTOs.response;
 namespace StudentAPIw6.Services
 {
     public interface ILopHocService
