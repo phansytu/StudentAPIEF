@@ -17,7 +17,7 @@ namespace StudentAPIw6.Repository
 
         public async Task<(List<LopHoc> Data, int TotalCount)> GetAllAsync(PaginationRequest request)
         {
-            var query = _appDbContext.LopHocs.AsQueryable();
+            var query = _appDbContext.LopHocs.AsNoTracking().AsQueryable();
 
             var totalCount = await query.CountAsync();
 
@@ -30,10 +30,10 @@ namespace StudentAPIw6.Repository
         }
 
         public async Task<LopHoc?> GetByMaLopAsync(string maLop)
-            => await _appDbContext.LopHocs.FirstOrDefaultAsync(x => x.MaLop == maLop);
+            => await _appDbContext.LopHocs.AsNoTracking().FirstOrDefaultAsync(x => x.MaLop == maLop);
 
         public async Task<LopHoc?> GetByTenLopAsync(string tenLop)
-            => await _appDbContext.LopHocs.FirstOrDefaultAsync(x => x.TenLop == tenLop);
+            => await _appDbContext.LopHocs.AsNoTracking().FirstOrDefaultAsync(x => x.TenLop == tenLop);
 
         public async Task AddAsync(LopHoc lopHoc)
             => await _appDbContext.LopHocs.AddAsync(lopHoc);
@@ -56,7 +56,7 @@ namespace StudentAPIw6.Repository
         public async Task<List<ThongKeLopHoc>> ThongKeLopHocAsync()
         {
             var query =
-                from sv in _appDbContext.SinhViens
+                from sv in _appDbContext.SinhViens.AsNoTracking()
 
                 join lp in _appDbContext.LopHocs on sv.LopHocId equals lp.Id
                 // join bm in _appDbContext.BoMons on lp.BoMonId equals bm.Id

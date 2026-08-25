@@ -24,7 +24,7 @@ namespace StudentAPIw6.Services
 
         public async Task<(List<SinhVien> Data, int TotalCount)> GetAllAsync(SinhVienQueryRequest request)
         {
-            var query = _appDbContext.SinhViens.AsQueryable();
+            var query = _appDbContext.SinhViens.AsNoTracking().AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(request.Keyword))
             {
@@ -65,10 +65,10 @@ namespace StudentAPIw6.Services
         }
 
         public async Task<SinhVien?> GetByIdAsync(int id)
-            => await _appDbContext.SinhViens.FirstOrDefaultAsync(x => x.Id == id);
+            => await _appDbContext.SinhViens.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
 
         public async Task<SinhVien?> GetByMsvAsync(string maSV)
-            => await _appDbContext.SinhViens.FirstOrDefaultAsync(x => x.MaSV == maSV);
+            => await _appDbContext.SinhViens.AsNoTracking().FirstOrDefaultAsync(x => x.MaSV == maSV);
 
         public async Task AddAsync(SinhVien student)
             => await _appDbContext.SinhViens.AddAsync(student);

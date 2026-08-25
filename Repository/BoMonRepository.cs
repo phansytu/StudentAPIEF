@@ -16,7 +16,7 @@ namespace StudentAPIw6.Repository
 
         public async Task<(List<BoMon> Data, int TotalCount)> GetAllAsync(PaginationRequest request)
         {
-            var query = _appDbContext.BoMons.AsQueryable();
+            var query = _appDbContext.BoMons.AsNoTracking().AsQueryable();
 
             var totalCount = await query.CountAsync();
 
@@ -35,7 +35,7 @@ namespace StudentAPIw6.Repository
             => await _appDbContext.BoMons.FirstOrDefaultAsync(x => x.maBM == maBoMon);
 
         public async Task<BoMon?> GetByTenBoMonAsync(string tenBoMon)
-            => await _appDbContext.BoMons.FirstOrDefaultAsync(x => x.tenBM == tenBoMon);
+            => await _appDbContext.BoMons.AsNoTracking().FirstOrDefaultAsync(x => x.tenBM == tenBoMon);
 
         public async Task AddAsync(BoMon boMon)
             => await _appDbContext.BoMons.AddAsync(boMon);
