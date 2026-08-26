@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using StudentAPIw6.Services;
+using StudentAPIw6.Services.Interfaces;
 using StudentAPIw6.API.DTOs.Request;
 
 namespace StudentAPIw6.controller

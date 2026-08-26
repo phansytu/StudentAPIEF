@@ -3,8 +3,9 @@ using StudentAPIw6.API.DTOs.Response;
 using StudentAPIw6.API.DTOs.Request;
 using StudentAPIw6.API.Validators.BusinessValidators;
 using StudentAPIw6.Common.Wrappers;
+using StudentAPIw6.Services.Interfaces;
 
-namespace StudentAPIw6.Services
+namespace StudentAPIw6.Services.Implementations
 {
     public class SinhVienService : ISinhVienService
     {

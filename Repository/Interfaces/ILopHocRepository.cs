@@ -2,7 +2,7 @@
 using StudentAPIw6.Model;
 using StudentAPIw6.API.DTOs.Request;
 using StudentAPIw6.API.DTOs.response;
-namespace StudentAPIw6.Repository
+namespace StudentAPIw6.Repository.Interfaces
 {
     public interface ILopHocRepository
     {

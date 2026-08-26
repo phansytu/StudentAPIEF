@@ -3,8 +3,9 @@ using Microsoft.Data.SqlClient;
 using StudentAPIw6.API.DTOs.Request;
 using StudentAPIw6.API.DTOs.Response;
 using StudentAPIw6.Common.Wrappers;
+using StudentAPIw6.Repository.Interfaces;
 
-namespace StudentAPIw6.Repository
+namespace StudentAPIw6.Repository.Implementations
 {
     public class DashboardRepository : IDashboardRepository
     {

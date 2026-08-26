@@ -2,8 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using StudentAPIw6.Model;
 using StudentAPIw6.Context;
 using StudentAPIw6.API.DTOs.Request;
+using StudentAPIw6.Repository.Interfaces;
 
-namespace StudentAPIw6.Repository
+namespace StudentAPIw6.Repository.Implementations
 {
     public class BoMonRepository : IBoMonRepository
     {
@@ -29,10 +30,10 @@ namespace StudentAPIw6.Repository
         }
 
         public async Task<BoMon?> GetByIdAsync(int Id)
-            => await _appDbContext.BoMons.FirstOrDefaultAsync(x => x.id == Id);
+            => await _appDbContext.BoMons.AsNoTracking().FirstOrDefaultAsync(x => x.id == Id);
 
         public async Task<BoMon?> GetByMaBoMonAsync(string maBoMon)
-            => await _appDbContext.BoMons.FirstOrDefaultAsync(x => x.maBM == maBoMon);
+            => await _appDbContext.BoMons.AsNoTracking().FirstOrDefaultAsync(x => x.maBM == maBoMon);
 
         public async Task<BoMon?> GetByTenBoMonAsync(string tenBoMon)
             => await _appDbContext.BoMons.AsNoTracking().FirstOrDefaultAsync(x => x.tenBM == tenBoMon);

@@ -3,8 +3,9 @@ using StudentAPIw6.Model;
 using StudentAPIw6.Context;
 using StudentAPIw6.API.DTOs.response;
 using StudentAPIw6.API.DTOs.Request;
+using StudentAPIw6.Repository.Interfaces;
 
-namespace StudentAPIw6.Repository
+namespace StudentAPIw6.Repository.Implementations
 {
     public class LopHocRepository : ILopHocRepository
     {
